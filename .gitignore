@@ -4,7 +4,6 @@ __pycache__/
 *$py.class
 *.so
 .Python
-env/
 build/
 develop-eggs/
 dist/
@@ -24,31 +23,101 @@ wheels/
 # Virtual Environment
 venv/
 ENV/
+env/
+.env
 
 # Flask
 instance/
 .webassets-cache
+*.db
 
-# Environment Variables
-.env
+# IDE - VSCode
+.vscode/
+*.code-workspace
+.history/
+
+# IDE - PyCharm
+.idea/
+*.iml
+*.iws
+.idea_modules/
+
+# IDE - Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Logs
+*.log
+logs/
+log/
 
 # Database
 *.db
 *.sqlite
+*.sqlite3
 
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
+# Environment variables
+.env
+.env.local
+.env.*.local
 
-# Logs
-*.log
+# Flask migrations
+migrations/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Unit test / coverage reports
+.pytest_cache/
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# dotenv
+.env
+
+# Local development settings
+local_settings.py
 
 # Uploads
 app/static/uploads/*
-!app/static/uploads/.gitkeep
-
-# OS
-.DS_Store
-Thumbs.db 
+!app/static/uploads/.gitkeep 
