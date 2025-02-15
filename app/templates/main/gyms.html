@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Our Gyms</h1>
+    <div class="row mt-4">
+        {% for gym in gyms.items %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ gym.name }}</h5>
+                    <p class="card-text">{{ gym.description[:150] }}...</p>
+                    <p><i class="fas fa-map-marker-alt"></i> {{ gym.address }}, {{ gym.city }}</p>
+                    <p><i class="fas fa-phone"></i> {{ gym.phone }}</p>
+                    <a href="#" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if gyms.pages > 1 %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% for page in gyms.iter_pages() %}
+                {% if page %}
+                    <li class="page-item {{ 'active' if page == gyms.page else '' }}">
+                        <a class="page-link" href="{{ url_for('main.gyms', page=page) }}">{{ page }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %} 

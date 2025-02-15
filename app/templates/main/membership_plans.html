@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Membership Plans</h1>
+    <div class="row mt-4">
+        {% for plan in plans %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ plan.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">${{ plan.price }}/month</h6>
+                    <p class="card-text">{{ plan.description }}</p>
+                    <ul class="list-unstyled">
+                        {% for feature in plan.features %}
+                        <li><i class="fas fa-check text-success"></i> {{ feature }}</li>
+                        {% endfor %}
+                    </ul>
+                    <a href="#" class="btn btn-primary">Select Plan</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

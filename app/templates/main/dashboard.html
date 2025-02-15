@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- User Profile Section -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Profile</h4>
+            </div>
+            <div class="card-body">
+                <h5>{{ current_user.first_name }} {{ current_user.last_name }}</h5>
+                <p class="text-muted">{{ current_user.email }}</p>
+                <p><strong>Member since:</strong> {{ current_user.created_at.strftime('%B %d, %Y') }}</p>
+                <a href="{{ url_for('main.edit_profile') }}" class="btn btn-outline-primary">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Memberships Section -->
+    <div class="col-md-8 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">Active Memberships</h4>
+                <a href="{{ url_for('main.membership_plans') }}" class="btn btn-primary btn-sm">Get New Membership</a>
+            </div>
+            <div class="card-body">
+                {% if memberships %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Gym</th>
+                                    <th>Plan</th>
+                                    <th>Status</th>
+                                    <th>Expires</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for membership in memberships %}
+                                <tr>
+                                    <td>{{ membership.gym.name }}</td>
+                                    <td>{{ membership.plan.name }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if membership.status == 'active' else 'warning' }}">
+                                            {{ membership.status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ membership.end_date.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                        <a href="{{ url_for('main.renew_membership', membership_id=membership.id) }}" 
+                                           class="btn btn-sm btn-outline-primary">Renew</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-center">You don't have any active memberships.</p>
+                    <div class="text-center">
+                        <a href="{{ url_for('main.membership_plans') }}" class="btn btn-primary">Browse Membership Plans</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upcoming Bookings Section -->
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">Upcoming Bookings</h4>
+                <a href="{{ url_for('main.book_class') }}" class="btn btn-primary btn-sm">Book a Class</a>
+            </div>
+            <div class="card-body">
+                {% if upcoming_bookings %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Class</th>
+                                    <th>Gym</th>
+                                    <th>Date & Time</th>
+                                    <th>Instructor</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in upcoming_bookings %}
+                                <tr>
+                                    <td>{{ booking.gym_class.name }}</td>
+                                    <td>{{ booking.gym_class.gym.name }}</td>
+                                    <td>{{ booking.booking_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>{{ booking.gym_class.instructor }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if booking.status == 'confirmed' else 'warning' }}">
+                                            {{ booking.status }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('main.cancel_booking', booking_id=booking.id) }}" 
+                                           class="btn btn-sm btn-outline-danger"
+                                           onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                            Cancel
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-center">You don't have any upcoming bookings.</p>
+                    <div class="text-center">
+                        <a href="{{ url_for('main.book_class') }}" class="btn btn-primary">Book a Class</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} 

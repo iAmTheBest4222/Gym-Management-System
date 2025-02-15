@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Book a Class</h1>
+    <div class="row mt-4">
+        {% for class in classes.items %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ class.name }}</h5>
+                    <p class="card-text">{{ class.description }}</p>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-user"></i> Instructor: {{ class.instructor }}</li>
+                        <li><i class="fas fa-clock"></i> Time: {{ class.start_time.strftime('%I:%M %p') }} - {{ class.end_time.strftime('%I:%M %p') }}</li>
+                        <li><i class="fas fa-users"></i> Available Spots: {{ class.capacity - class.current_bookings }}</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary">Book Now</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if classes.pages > 1 %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% for page in classes.iter_pages() %}
+                {% if page %}
+                    <li class="page-item {{ 'active' if page == classes.page else '' }}">
+                        <a class="page-link" href="{{ url_for('main.book_class', page=page) }}">{{ page }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %} 

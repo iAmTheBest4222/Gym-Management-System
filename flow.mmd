@@ -1,0 +1,48 @@
+graph TD
+    A[Start] --> B{User Type}
+    
+    %% Admin Flow
+    B -->|Admin| C[Admin Dashboard]
+    C --> D[Manage Gyms]
+    C --> E[Manage Members]
+    C --> F[Manage Classes]
+    C --> G[View Reports]
+    
+    D --> D1[Add Gym]
+    D --> D2[Edit Gym]
+    D --> D3[View Gym Details]
+    D --> D4[Delete Gym]
+    
+    E --> E1[View All Members]
+    E --> E2[Manage Memberships]
+    E --> E3[Update Member Status]
+    
+    F --> F1[Add Class]
+    F --> F2[Edit Class]
+    F --> F3[Delete Class]
+    F --> F4[View Bookings]
+    
+    G --> G1[View Statistics]
+    G --> G2[View Bookings Report]
+    G --> G3[View Revenue Report]
+    
+    %% Regular User Flow
+    B -->|User| H[User Dashboard]
+    H --> I[View Gyms]
+    H --> J[Book Classes]
+    H --> K[Manage Profile]
+    H --> L[View Memberships]
+    
+    I --> I1[View Gym Details]
+    I --> I2[View Classes]
+    
+    J --> J1[View Available Classes]
+    J --> J2[Book Class]
+    J --> J3[Cancel Booking]
+    
+    K --> K1[Edit Profile]
+    K --> K2[Change Password]
+    
+    L --> L1[View Active Memberships]
+    L --> L2[Renew Membership]
+    L --> L3[View Payment History]

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Welcome to Gym Management System</h1>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Membership Plans</h5>
+                    <p class="card-text">View our membership plans and choose what's best for you.</p>
+                    <a href="{{ url_for('main.membership_plans') }}" class="btn btn-primary">View Plans</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Our Gyms</h5>
+                    <p class="card-text">Find a gym near you and start your fitness journey.</p>
+                    <a href="{{ url_for('main.gyms') }}" class="btn btn-primary">View Gyms</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Book a Class</h5>
+                    <p class="card-text">Browse and book fitness classes.</p>
+                    <a href="{{ url_for('main.book_class') }}" class="btn btn-primary">Book Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

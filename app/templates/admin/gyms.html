@@ -1,0 +1,122 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Gyms{% endblock %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Manage Gyms</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ url_for('admin.add_gym') }}" class="btn btn-primary">
+            <i class="fas fa-plus-circle me-2"></i>Add New Gym
+        </a>
+    </div>
+</div>
+
+<!-- Search and Filter -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <form class="d-flex" method="GET">
+            <input type="search" name="search" class="form-control me-2" 
+                   placeholder="Search gyms..." value="{{ request.args.get('search', '') }}">
+            <button type="submit" class="btn btn-outline-primary">Search</button>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <div class="d-flex justify-content-end">
+            <select class="form-select w-auto" name="city" onchange="this.form.submit()">
+                <option value="">All Cities</option>
+                {% for city in cities %}
+                <option value="{{ city }}" {% if request.args.get('city') == city %}selected{% endif %}>
+                    {{ city }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Gyms Table -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>City</th>
+                        <th>Members</th>
+                        <th>Classes</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gym in gyms.items %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="{{ gym.image_url or url_for('static', filename='images/default-gym.jpg') }}" 
+                                     class="rounded-circle me-2" width="40" height="40" alt="{{ gym.name }}">
+                                {{ gym.name }}
+                            </div>
+                        </td>
+                        <td>{{ gym.city }}</td>
+                        <td>{{ gym.memberships|length }}</td>
+                        <td>{{ gym.classes|length }}</td>
+                        <td>
+                            <span class="badge bg-success">Active</span>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="{{ url_for('admin.edit_gym', gym_id=gym.id) }}" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-danger" 
+                                        onclick="confirmDelete('{{ gym.id }}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <a href="{{ url_for('admin.gym_details', gym_id=gym.id) }}" 
+                                   class="btn btn-sm btn-outline-info">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if gyms.pages > 1 %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% for page in gyms.iter_pages() %}
+                    {% if page %}
+                        <li class="page-item {% if page == gyms.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('admin.gyms', page=page) }}">{{ page }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+function confirmDelete(gymId) {
+    if (confirm('Are you sure you want to delete this gym? This action cannot be undone.')) {
+        window.location.href = "{{ url_for('admin.delete_gym', gym_id='') }}" + gymId;
+    }
+}
+</script>
+{% endblock %} 

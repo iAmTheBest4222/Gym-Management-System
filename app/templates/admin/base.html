@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<style>
+    .admin-sidebar {
+        min-height: calc(100vh - 56px);
+        background-color: #f8f9fa;
+        border-right: 1px solid #dee2e6;
+    }
+    .admin-sidebar .nav-link {
+        color: #333;
+        padding: 0.5rem 1rem;
+    }
+    .admin-sidebar .nav-link:hover {
+        background-color: #e9ecef;
+    }
+    .admin-sidebar .nav-link.active {
+        background-color: #007bff;
+        color: white;
+    }
+    .admin-content {
+        padding: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Admin Sidebar -->
+        <nav class="col-md-2 d-none d-md-block bg-dark sidebar min-vh-100">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ 'active' if request.endpoint == 'admin.dashboard' }}" 
+                           href="{{ url_for('admin.dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ 'active' if request.endpoint == 'admin.gyms' }}" 
+                           href="{{ url_for('admin.gyms') }}">
+                            <i class="fas fa-dumbbell me-2"></i>Manage Gyms
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ 'active' if request.endpoint == 'admin.membership_plans' }}" 
+                           href="{{ url_for('admin.membership_plans') }}">
+                            <i class="fas fa-tags me-2"></i>Membership Plans
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ 'active' if request.endpoint == 'admin.users' }}" 
+                           href="{{ url_for('admin.users') }}">
+                            <i class="fas fa-users me-2"></i>Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ 'active' if request.endpoint == 'admin.bookings' }}" 
+                           href="{{ url_for('admin.bookings') }}">
+                            <i class="fas fa-calendar-check me-2"></i>Bookings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-10 ms-sm-auto px-md-4">
+            {% block admin_content %}{% endblock %}
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js"></script>
+{% endblock %} 

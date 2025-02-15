@@ -1,0 +1,184 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ gym.name }} - Details{% endblock %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">{{ gym.name }}</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ url_for('admin.edit_gym', gym_id=gym.id) }}" class="btn btn-primary me-2">
+            <i class="fas fa-edit me-2"></i>Edit Gym
+        </a>
+        <a href="{{ url_for('admin.add_gym_class', gym_id=gym.id) }}" class="btn btn-success">
+            <i class="fas fa-plus-circle me-2"></i>Add Class
+        </a>
+        <a href="{{ url_for('admin.gym_memberships', gym_id=gym.id) }}" class="btn btn-info me-2">
+            <i class="fas fa-users me-2"></i>Manage Memberships
+        </a>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h6 class="card-title">Total Members</h6>
+                <h2 class="mb-0">{{ stats.total_members }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h6 class="card-title">Active Members</h6>
+                <h2 class="mb-0">{{ stats.active_members }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h6 class="card-title">Total Classes</h6>
+                <h2 class="mb-0">{{ stats.total_classes }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <h6 class="card-title">Total Bookings</h6>
+                <h2 class="mb-0">{{ stats.total_bookings }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gym Information -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Gym Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Address</dt>
+                    <dd class="col-sm-8">{{ gym.address }}, {{ gym.city }}, {{ gym.country }}</dd>
+                    
+                    <dt class="col-sm-4">Contact</dt>
+                    <dd class="col-sm-8">
+                        <div>Phone: {{ gym.phone }}</div>
+                        <div>Email: {{ gym.email }}</div>
+                    </dd>
+                    
+                    <dt class="col-sm-4">Amenities</dt>
+                    <dd class="col-sm-8">
+                        <ul class="list-unstyled">
+                            {% for amenity in gym.amenities %}
+                            <li><i class="fas fa-check text-success me-2"></i>{{ amenity }}</li>
+                            {% endfor %}
+                        </ul>
+                    </dd>
+                    
+                    <dt class="col-sm-4">Opening Hours</dt>
+                    <dd class="col-sm-8">
+                        <ul class="list-unstyled">
+                            {% for day, hours in gym.opening_hours.items() %}
+                            <li>{{ day }}: {{ hours }}</li>
+                            {% endfor %}
+                        </ul>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Location</h5>
+            </div>
+            <div class="card-body">
+                <div id="map" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Classes Schedule -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Class Schedule</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Class Name</th>
+                        <th>Instructor</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Capacity</th>
+                        <th>Bookings</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for class in classes %}
+                    <tr>
+                        <td>{{ class.name }}</td>
+                        <td>{{ class.instructor }}</td>
+                        <td>{{ class.start_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>{{ class.end_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>{{ class.capacity }}</td>
+                        <td>{{ class.current_bookings }}/{{ class.capacity }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="{{ url_for('admin.edit_gym_class', gym_id=gym.id, class_id=class.id) }}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                        onclick="confirmDeleteClass('{{ class.id }}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ config.GOOGLE_MAPS_API_KEY }}"></script>
+<script>
+function initMap() {
+    const lat = {{ gym.latitude }};
+    const lng = {{ gym.longitude }};
+    const map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 15,
+        center: { lat, lng }
+    });
+    new google.maps.Marker({
+        position: { lat, lng },
+        map: map,
+        title: '{{ gym.name }}'
+    });
+}
+
+function confirmDeleteClass(classId) {
+    if (confirm('Are you sure you want to delete this class? All bookings will be cancelled.')) {
+        window.location.href = "{{ url_for('admin.delete_gym_class', gym_id=gym.id, class_id='') }}" + classId;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initMap);
+</script>
+{% endblock %} 
